@@ -21,10 +21,11 @@ func _process(delta: float) -> void:
     queue_redraw()
 
 func _on_body_entered(body: Node2D) -> void:
-    if body.is_in_group("player"):
-        GameState.collect_echo_sigil(item_id)
+    if not body.is_in_group("player"):
+        return
+    GameState.collect_echo_sigil(item_id)
     GameFeedback.burst(global_position, Color("b8f1eb"), 10, 155.0)
-        queue_free()
+    queue_free()
 
 func _draw() -> void:
     var bob := sin(float_time * 3.0) * 3.0
