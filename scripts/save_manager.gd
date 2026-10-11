@@ -138,7 +138,7 @@ func _filter_room_ids(value: Variant, old_schema: int) -> Array[int]:
         return result
     for room in value:
         if room is int and room >= 0 and room <= (9 if old_schema <= 5 else (15 if old_schema == 6 else (20 if old_schema == 7 else (25 if old_schema == 8 else (34 if old_schema == 9 else 37))))):
-            var migrated_room := 15 if old_schema <= 5 and room == 9 else room
+            var migrated_room: int = 15 if old_schema <= 5 and room == 9 else room
             if not result.has(migrated_room):
                 result.append(migrated_room)
     return result
