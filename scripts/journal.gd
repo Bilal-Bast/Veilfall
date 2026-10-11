@@ -83,7 +83,7 @@ func _ability_summary() -> String:
 	var labels: Array[String] = []
 	for ability in ["veil_shift", "air_dash", "wall_climb", "lantern_pulse"]:
 		if GameState.unlocked_abilities.has(ability):
-			var display_name := ability
+			var display_name: String = str(ability)
 			match ability:
 				"veil_shift": display_name = "Veil Shift"
 				"air_dash": display_name = "Air Dash"

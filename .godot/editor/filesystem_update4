@@ -1,3 +1,4 @@
 res://scripts/save_manager.gd
 res://scripts/hud.gd
 res://scripts/echo_sigil.gd
+res://scripts/world_map.gd
