@@ -1,0 +1,8 @@
+res://scripts/save_manager.gd
+res://scripts/hud.gd
+res://scripts/echo_sigil.gd
+res://scripts/world_map.gd
+res://scripts/journal.gd
+res://scripts/exit_gate.gd
+res://scripts/forest_room.gd
+res://scripts/world_block.gd
