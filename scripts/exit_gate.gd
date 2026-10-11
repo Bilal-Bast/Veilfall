@@ -22,7 +22,6 @@ func _ready() -> void:
     barrier_shape.set_deferred("disabled", GameState.shards > 0)
     GameState.shard_count_changed.connect(_on_shard_changed)
     body_entered.connect(_on_body_entered)
-    GameState.shard_count_changed.connect(_on_shard_changed)
 
 func _on_body_entered(body: Node2D) -> void:
     if body.is_in_group("player"):
