@@ -31,7 +31,7 @@ func _draw() -> void:
         draw_rect(card, border, false, 2.0 if discovered or current else 1.0)
         if discovered:
             draw_rect(Rect2(card.position, Vector2(4, card.size.y)), region_color, true)
-        var label := ROOM_NAMES[i] if discovered else "???"
+        var label: String = ROOM_NAMES[i] if discovered else "???"
         var marker := _room_marker(i) if discovered else ""
         var marker_color := Color("d8e8f3")
         if marker == "B!":
