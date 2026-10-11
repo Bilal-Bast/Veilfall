@@ -16,8 +16,11 @@ const SOVEREIGN = preload("res://scripts/veil_sovereign.gd")
 const RIFT_MOTH = preload("res://scripts/rift_moth.gd")
 const VEIL_ARCHER = preload("res://scripts/veil_archer.gd")
 const ECHO_WARDEN = preload("res://scripts/echo_warden.gd")
+const WOODS_TERRAIN_PATCH = preload("res://scenes/terrain/woods_terrain_patch.tscn")
+const WOODS_TERRAIN_ATLAS = preload("res://assets/tilesets/whispering_woods_clearing_atlas.png")
 
 @export_range(0, 37) var room_id: int = 0
+var _woods_detail_layer: Node2D
 
 func _ready() -> void:
     match room_id:
@@ -98,12 +101,36 @@ func _ready() -> void:
         37:
             _build_archive_secret("lore_citadel_01", "The Starless Testament", Vector2(10920, 399))
 
-func _make_block(at: Vector2, size: Vector2, spectral: bool = false) -> void:
+func _make_block(at: Vector2, size: Vector2, spectral: bool = false, draw_art: bool = true) -> void:
     var block = BLOCK.new()
-    block.configure(at, size, spectral)
+    block.configure(at, size, spectral, draw_art)
     block.region_style = _region_style()
     block.foundry_style = block.region_style == "foundry"
     add_child(block)
+
+func _make_clearing_block(at: Vector2, size: Vector2, spectral: bool = false) -> void:
+    _make_block(at, size, spectral, false)
+    var patch: WoodsTerrainPatch = WOODS_TERRAIN_PATCH.instantiate()
+    patch.configure(at, size, spectral)
+    add_child(patch)
+
+func _add_woods_detail(top_left: Vector2, atlas_cell: Vector2i, anchored_to_surface: bool = false, flip_h: bool = false, art_scale: float = 0.5) -> void:
+    if not is_instance_valid(_woods_detail_layer):
+        _woods_detail_layer = Node2D.new()
+        _woods_detail_layer.name = "WoodsDecorations"
+        _woods_detail_layer.z_index = 1
+        add_child(_woods_detail_layer)
+    var sprite := Sprite2D.new()
+    sprite.texture = WOODS_TERRAIN_ATLAS
+    sprite.region_enabled = true
+    sprite.region_rect = Rect2(Vector2(atlas_cell * 64), Vector2(64, 64))
+    sprite.centered = false
+    sprite.scale = Vector2.ONE * art_scale
+    sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    sprite.flip_h = flip_h
+    sprite.z_index = 0
+    sprite.position = top_left - Vector2(0.0, 64.0 * art_scale) if anchored_to_surface else top_left
+    _woods_detail_layer.add_child(sprite)
 
 func _region_style() -> String:
     if room_id in [4, 5, 22, 28, 29]:
@@ -146,10 +173,18 @@ func _build_bridge_room() -> void:
     _add_memory_portal(Vector2(320, 395), Vector2(35 * 960 + 120, 399), "lore_veil", "The Scribe's folio arch answers only in the Veil, after accepting the quest.")
 
 func _build_clearing_room() -> void:
-    _make_block(Vector2(2490 - 1920, 480), Vector2(780, 120))
-    _make_block(Vector2(2850 - 1920, 300), Vector2(35, 480))
-    _make_block(Vector2(2050 - 1920, 372), Vector2(150, 22), true)
-    _make_block(Vector2(2380 - 1920, 334), Vector2(155, 20))
+    _make_clearing_block(Vector2(2490 - 1920, 480), Vector2(780, 120))
+    _make_clearing_block(Vector2(2850 - 1920, 300), Vector2(35, 480))
+    _make_clearing_block(Vector2(2050 - 1920, 372), Vector2(150, 22), true)
+    _make_clearing_block(Vector2(2380 - 1920, 334), Vector2(155, 20))
+    _add_woods_detail(Vector2(218, 420), Vector2i(0, 3), true)
+    _add_woods_detail(Vector2(690, 420), Vector2i(1, 3), true, false, 0.72)
+    _add_woods_detail(Vector2(826, 420), Vector2i(2, 3), true, false, 0.7)
+    _add_woods_detail(Vector2(896, 420), Vector2i(0, 3), true, true)
+    _add_woods_detail(Vector2(390, 436), Vector2i(1, 3), false, false, 0.75)
+    _add_woods_detail(Vector2(582, 454), Vector2i(2, 3), false, true, 0.68)
+    _add_woods_detail(Vector2(114, 383), Vector2i(3, 3))
+    _add_woods_detail(Vector2(444, 344), Vector2i(3, 3), false, true)
     _make_enemy(Vector2(2220 - 1920, 402), 2140 - 1920, 2310 - 1920)
     if GameState.warden_defeated:
         if not GameState.collected_items.has("lantern_shard_woods_01"):

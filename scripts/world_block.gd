@@ -6,11 +6,13 @@ var spectral: bool = false
 var foundry_style: bool = false
 var region_style := "woods"
 var collision: CollisionShape2D
+var art_visible: bool = true
 
-func configure(at: Vector2, size: Vector2, in_veil: bool = false) -> void:
+func configure(at: Vector2, size: Vector2, in_veil: bool = false, draw_art: bool = true) -> void:
     position = at
     dimensions = size
     spectral = in_veil
+    art_visible = draw_art
 
 func _ready() -> void:
     texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -30,6 +32,8 @@ func _on_realm_changed(active: bool) -> void:
     queue_redraw()
 
 func _draw() -> void:
+    if not art_visible:
+        return
     var r := Rect2(-dimensions / 2.0, dimensions)
     if spectral:
         var alpha := 0.94 if GameState.is_veil else 0.20
